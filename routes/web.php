@@ -47,7 +47,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [TransactionController::class, 'store'])->name('store');
         Route::get('/search', [TransactionController::class, 'search'])->name('search');
         Route::get('/search-consumer', [TransactionController::class, 'searchConsumer'])->name('searchConsumer');
+        Route::get('/report', [TransactionController::class, 'report'])->name('report');
         Route::get('/{transaction}/detail', [TransactionController::class, 'show'])->name('detail');
+        Route::get('/{transaction}/receipt', [TransactionController::class, 'receipt'])->name('receipt');
     });
 });
 

@@ -275,6 +275,11 @@
                 return;
             }
 
+            if (!$('#consumer_id').val()) {
+                alert('Pilih konsumen terlebih dahulu.');
+                return;
+            }
+
             const payment = parseInt($('#payment').val());
             const change = payment - totalPrice;
 
@@ -282,6 +287,8 @@
                 alert('Uang yang diterima kurang dari total harga.');
                 return;
             }
+
+            let receiptWindow = window.open('', '_blank');
             const transactionData = {
                 total_price: totalPrice,
                 date: new Date().toISOString().split('T')[0],
@@ -297,13 +304,28 @@
                 },
                 success: function (response) {
                     if (response.success) {
+                        if (response.receipt_url) {
+                            if (receiptWindow) {
+                                receiptWindow.location = response.receipt_url;
+                            } else {
+                                window.open(response.receipt_url, '_blank');
+                            }
+                        } else if (receiptWindow) {
+                            receiptWindow.close();
+                        }
                         alert('Transaksi berhasil disimpan!');
                         location.reload();
                     } else {
+                        if (receiptWindow) {
+                            receiptWindow.close();
+                        }
                         alert('Terjadi kesalahan, coba lagi.');
                     }
                 },
                 error: function (xhr, status, error) {
+                    if (receiptWindow) {
+                        receiptWindow.close();
+                    }
                     console.error(xhr.responseText);
                     alert('Gagal menyimpan transaksi.');
                 }
